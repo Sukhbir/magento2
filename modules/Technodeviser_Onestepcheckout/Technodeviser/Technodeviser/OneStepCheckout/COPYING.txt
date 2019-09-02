@@ -1,0 +1,8 @@
+ * Technodeviser.co.uk
+ *
+ * NOTICE OF LICENSE
+ * This source package is subject to the Technodeviser.co.uk license that is available through the world-wide-web at this URL: http://www.Technodeviser.co.uk/license-agreement.html
+ * Please see LICENSE.txt
+ *
+ * DISCLAIMER
+ * Do not edit or add to any file of this package if you wish to upgrade this extension to newer version in the future.

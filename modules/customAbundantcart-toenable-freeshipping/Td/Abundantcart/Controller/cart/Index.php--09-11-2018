@@ -1,0 +1,145 @@
+<?php
+namespace Td\Abundantcart\Controller\cart;
+use Magento\Contact\Model\MailInterface;
+
+
+class Index extends \Magento\Framework\App\Action\Action
+{
+    const XML_PATH_EMAIL_RECIPIENT = 'trans_email/ident_support/email';
+    protected $scopeConfig;
+	/**
+     * @var \Magento\Framework\App\Cache\TypeListInterface
+     */
+    protected $_cacheTypeList;
+
+    /**
+     * @var \Magento\Framework\App\Cache\StateInterface
+     */
+    protected $_cacheState;
+
+    /**
+     * @var \Magento\Framework\App\Cache\Frontend\Pool
+     */
+    protected $_cacheFrontendPool;
+
+    /**
+     * @var \Magento\Framework\View\Result\PageFactory
+     */
+    protected $resultPageFactory;
+    protected $inlineTranslation;
+    protected $_transportBuilder;
+    protected $storeManager;
+    protected $_escaper; 
+     
+    public function __construct(
+            \Magento\Framework\App\Action\Context $context,
+            \Magento\Framework\App\Cache\TypeListInterface $cacheTypeList,
+            \Magento\Framework\Mail\Template\TransportBuilder $transportBuilder,
+            \Magento\Framework\Translate\Inline\StateInterface $inlineTranslation,
+            \Magento\Framework\App\Cache\StateInterface $cacheState,
+            \Magento\Store\Model\StoreManagerInterface $storeManager,
+            \Magento\Framework\App\Cache\Frontend\Pool $cacheFrontendPool,
+            \Magento\Framework\View\Result\PageFactory $resultPageFactory,
+            \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+            \Magento\Framework\Escaper $escaper
+            
+        )
+    {
+        parent::__construct($context);
+        $this->_transportBuilder = $transportBuilder;
+        $this->inlineTranslation = $inlineTranslation;
+        $this->_cacheTypeList = $cacheTypeList;        
+        $this->_cacheState = $cacheState;
+        $this->_cacheFrontendPool = $cacheFrontendPool;
+        $this->resultPageFactory = $resultPageFactory;
+        $this->_scopeConfig = $scopeConfig;
+        $this->storeManager = $storeManager;
+        $this->_escaper = $escaper;
+        $_ObjectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $this->ObjectManager = $_ObjectManager;
+        
+    }
+    public function getStoreEmail()
+    {
+        return $this->_scopeConfig->getValue(
+            'trans_email/ident_support/email',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+        );
+    }
+    public function execute()
+    { 
+        $post = $this->getRequest()->getPost();  
+        $customerSession = $this->ObjectManager->get('\Magento\Customer\Model\Session');
+        if($customerSession->getCoupon()!='')
+        {
+            $couponcode = $customerSession->getCoupon();
+            echo "You can use <strong id='coupan-code'>$couponcode</strong> code for free shipping";
+            exit;
+        }
+        
+        if($post['email'] && $customerSession->getCoupon()=='')
+        {
+			$data = $itemsName = Array();
+            $couponcode = $this->generateCoupon();
+            $customerSession->setPopup('13');
+            $customerSession->setCoupon($couponcode);
+            $to = $post['email'];
+            $from = $this->getStoreEmail();
+            $store = $this->storeManager->getStore()->getId();
+            $transport = $this->_transportBuilder->setTemplateIdentifier('abundant_cart_email_template')
+                ->setTemplateOptions(['area' => 'frontend', 'store' => $store])
+                ->setTemplateVars(['store' => $this->storeManager->getStore(),
+                        'coupon_code' => $couponcode
+                ])
+            ->setFrom('general')
+            ->addTo($to, 'Integralaudio')
+            ->getTransport();
+            $transport->sendMessage();
+			$cart = $this->ObjectManager->get('\Magento\Checkout\Model\Cart'); 
+			$itemsVisible = $cart->getQuote()->getAllVisibleItems();
+			foreach($itemsVisible as $item) {
+				$itemsName[] = $item->getName();           
+			}
+			$model = $this->_objectManager->create('Td\Abundantcart\Model\Index');
+			$data['email'] = $post['email'];
+			$data['cus_coupon_code'] = $couponcode;
+			$data['order_id'] = "";
+			$data['items'] = implode(", ",$itemsName);
+			$model->setData($data);
+			$model->save();
+			//print_r($sku);
+            echo "You can use <strong id='coupan-code'>$couponcode</strong> code for free shipping";
+            exit;
+        }
+        else
+        {
+            echo "Please enter your email";
+            exit;
+        }
+    }
+    
+    public function generateCoupon()
+    {
+        $code = $this->generateRandomString();
+         
+        $coupon = $this->ObjectManager->create('Magento\SalesRule\Model\Coupon');        
+        $generate  = $coupon->setId(null)->setRuleId(21)->setUsageLimit(1)->setUsagePerCustomer(1)
+                ->setCreatedAt(date('Y-m-d'))->setType(1)->setCode($code)->save();
+        if($generate)
+        {
+            return $code;
+        }
+        
+    }
+    
+    function generateRandomString($length = 8) 
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$#@&*^!';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
+}

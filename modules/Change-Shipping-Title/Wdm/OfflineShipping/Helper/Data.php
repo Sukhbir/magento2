@@ -1,0 +1,60 @@
+<?php
+
+namespace Wdm\OfflineShipping\Helper;
+use \Magento\Framework\App\Helper\AbstractHelper;
+
+class Data extends AbstractHelper
+{
+    protected $_ObjectManager;
+    
+    public function __construct() 
+    {
+        $_ObjectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $this->ObjectManager = $_ObjectManager;
+    }
+    
+    public function ShippingTitle()
+    {
+        $cart = $this->ObjectManager->get('\Magento\Checkout\Model\Cart'); 
+        $items = $cart->getQuote()->getAllItems();
+        $checkpoint1 = false;
+        $checkpoint2 = false;
+        $productGroup=$height=$width=$depth=$weigth=$cubic='';
+        foreach($items as $item) 
+        {
+            $_product = $this->ObjectManager->create('\Magento\Catalog\Model\Product')->load($item->getProductId());
+            $productGroup = $_product->getProductGroup();
+            $height += $_product->getHeight();
+            $width += $_product->getWidth();
+            $depth += $_product->getDepth();
+            $weigth += $_product->getWeight();
+            $cubic += $_product->getCubic();
+            
+            $Group = (strlen($productGroup) > 3) ? substr($productGroup,0,3) : $productGroup;
+            if($Group=='301')
+            {
+                $checkpoint1 = true;
+            }
+        }
+        if($height <= '105' || $width <= '105' || $depth <= '105' || $weigth <= '22' || $cubic <= '0.25')
+        {
+            $checkpoint2 = true;
+        }
+        
+        if($checkpoint1)
+        {
+            $ShippingTitle = 'CSS';
+        }
+        elseif($checkpoint2)
+        {
+            $ShippingTitle = 'AP';
+        }
+        else
+        {
+            $ShippingTitle = 'SCA';
+        }
+        
+        return $ShippingTitle;
+    }
+}
+?>

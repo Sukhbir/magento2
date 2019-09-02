@@ -1,0 +1,110 @@
+<?php
+$om =   \Magento\Framework\App\ObjectManager::getInstance();
+$customerSession = $om->get('\Magento\Customer\Model\Session');
+
+$cartData = $om->get('Magento\Checkout\Model\Cart')->getQuote()->getAllItems();
+$subTotal = $om->get('Magento\Checkout\Model\Cart')->getQuote()->getSubtotal();
+$couponcode = $om->get('Magento\Checkout\Model\Cart')->getQuote()->getCouponCode();
+
+$created_time = '';
+foreach($cartData as $item)
+{
+    $created_time = $item->getCreatedAt();
+}
+if($created_time)
+{ 
+    $start  = date_create($created_time);
+    $end    = date_create(); // Current time and date
+    $diff   = date_diff( $start, $end );
+
+    if(($diff->i >= 1) && ($couponcode == null) && ($customerSession->getCuscartprice() != $subTotal))
+    { 
+    ?>
+        <div class="main-popup" id="custom-popup-cart">
+            <div class="inner-popup">
+                <div class="popup-content">
+                    <p class="top">before you go, we have a loud offer</p>
+                    <h2>Free Shipping</h2>
+                    <form action="#" method="post" id="custom-popup-form" >
+                        <p class="top coupon"></p>
+                        <div class="input-fields-container">
+                            <span class="fields">
+                                <input class="email" type="email" placeholder="ENTER YOUR EMAIL HERE" data-validate="{required:true, 'validate-email':true}">
+                                <div for="email" generated="true" class="mage-error" id="email-error"></div>
+                            </span>
+                            <span class="fields">
+                                <button class="button" type="button" title="CLAIM MY FREE SHIPPING">CLAIM MY FREE SHIPPING</button>
+                            </span>
+                        </div>
+                    </form>
+                    <p class="bottom" id="no_free_shipping">No thanks, I want to pay for shipping</p>
+                    <div class="cross">
+                        <a href="javascript:void(0)">Close</a>
+                        <img class="" id="custom-loader" style="display: none" src="<?php echo $block->getViewFileUrl('images/load.gif') ?>">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/x-magento-init">
+        {
+            "#custom-popup-form": {
+                "validation": {}
+            }
+        }
+
+    </script>
+        <script>
+        require(['jquery', 'jquery/ui'], function($){
+            function validateEmail($email) {
+              var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+              return emailReg.test( $email );
+            }     
+            jQuery(document).on('click','.popup-content .button',function(){ 
+                email = jQuery('.email').val();
+                if (email != null && email != '') { 
+                    if( !validateEmail(email)) {
+                        jQuery('#email-error').text("Please enter a valid email address (Ex: johndoe@domain.com).")
+                    }
+                    else
+                    { 
+                        jQuery('#email-error').text("")                         
+                        jQuery('.cross img').addClass('loader');
+                        jQuery.ajax({
+                            method: "POST",
+                            url: "<?php echo $this->getBaseUrl(); ?>get/cart",
+                            data: { email: email }
+                        })
+                        .done(function( msg ) {
+                            var message = jQuery.trim(msg);
+                            if(message!='Please enter your email')
+                            {
+                                jQuery('.fields,#no_free_shipping').css('display','none');
+                                jQuery('.top.coupon').html(msg);
+                            }else
+                            {
+                                jQuery('#email-error').text(msg);
+                            }                        
+                            jQuery('.cross img').css('display','none');
+                            jQuery('.cross img').removeClass('loader');
+                        }); 
+                    }
+                }
+                else
+                {
+                    jQuery('#email-error').text('Please enter your email');
+                }
+            });       
+
+           jQuery(document).on('click','.cross',function(){
+               jQuery('.main-popup').css('display','none');
+            });
+            jQuery(document).on('click','.bottom',function(){
+               jQuery('.main-popup').css('display','none');
+            });
+        });
+       
+        </script>
+<?php } 
+    
+} ?>
+

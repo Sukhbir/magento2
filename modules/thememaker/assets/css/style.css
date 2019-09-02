@@ -1,0 +1,12 @@
+.main_div{ margin-top: 60px; }
+h1 { color: #F26322;text-align: center;max-width: 1230px;width: 100%; margin: auto;padding-bottom: 20px;}
+div{ width: 100%; max-width: 1230px;border-radius: 5px;background-color: #f2f2f2;padding: 20px;margin: auto; }
+input[type=text], input[type=file] {width: 100%;padding: 12px 20px;margin: 8px 0;display: inline-block;border: 1px solid #ccc;border-radius: 4px;box-sizing: border-box; }
+select{width: 100%;padding: 12px 0px;margin: 8px 0;display: inline-block;border: 1px solid #ccc;border-radius: 4px;box-sizing: border-box;}
+input[type=button] { width: 100%;background-color: #F26322;color: white;padding: 14px 20px;margin: 8px 0;border: none;border-radius: 4px;cursor: pointer;}
+input[type=button]:hover { background-color: green;}
+.alert {position: absolute;top: 0px;left: 40px;padding: 20px;background-color: #f44336; color: white;}
+.closebtn {margin-left: 15px; color: white;font-weight: bold;float: right;font-size: 22px;line-height: 20px;cursor: pointer;transition: 0.3s;}
+.closebtn:hover { color: black;}
+#loading-image { top: 0px;display: none;background-color: rgba(255,255,255,0.7);position: fixed;z-index: +100 !important;width: 100%;height: 100%;max-width: 100%;max-height: 100%;text-align: center; }
+#loading-image img { position: relative;top: 120px; }

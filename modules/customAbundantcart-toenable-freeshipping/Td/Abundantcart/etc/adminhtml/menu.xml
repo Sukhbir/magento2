@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2015 Td. All rights reserved.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../Backend/etc/menu.xsd">
+    <menu>
+        <add id="Td_Abundantcart::td_abundantcart_index" title="Abandoned Cart" module="Td_Abundantcart"  sortOrder="20" dependsOnModule="Td_Abundantcart" action="abundantcart/abundantcart/index" resource="Td_Abundantcart::td_abundantcart_index"/>
+<!--AddMenu-->
+    </menu>
+</config>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-2columns-left" xsi:noNamespaceSchemaLocation="../../../../../../../lib/internal/Magento/Framework/View/Layout/etc/page_configuration.xsd">
+     <update handle="editor"/>
+    <body>
+	   <referenceContainer name="content">
+            <block class="Td\Abundantcart\Block\Adminhtml\Index\Edit" name="abundantcart_index_edit"/>
+        </referenceContainer>
+		 <referenceContainer name="left">
+            <block class="Td\Abundantcart\Block\Adminhtml\Index\Edit\Tabs" name="abundantcart_index_edit_tabs">
+				<block class="Td\Abundantcart\Block\Adminhtml\Index\Edit\Tab\AddDetail" name="abundantcart_index_edit_tab_adddetail"/>
+				 <action method="addTab">
+                    <argument name="name" xsi:type="string">adddetail_section</argument>
+                    <argument name="block" xsi:type="string">abundantcart_index_edit_tab_adddetail</argument>
+                </action>
+				<!--CedAddTab-->
+			</block>
+        </referenceContainer>
+    </body>
+</page>

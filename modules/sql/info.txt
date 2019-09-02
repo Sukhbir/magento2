@@ -1,0 +1,13 @@
+Admin:
+https://ourdinero.com/dinero/mlm/admin
+username:admin
+password:123456
+
+userside:
+https://ourdinero.com/dinero/mlm/
+username:ssc000001
+password:123456
+
+https://ourdinero.com/dinero/wp-admin/
+admin
+SKS@sakar2018

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Technodeviser
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Technodeviser.co.uk license that is
+ * available through the world-wide-web at this URL:
+ * http://www.Technodeviser.co.uk/license-agreement.html
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Technodeviser
+ * @package     Technodeviser_OneStepCheckout
+ * @copyright   Copyright (c) 2012 Technodeviser (http://www.Technodeviser.co.uk/)
+ * @license     http://www.Technodeviser.co.uk/license-agreement.html
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="creditmemo_totals">
+            <block class="Technodeviser\OneStepCheckout\Block\Order\Creditmemo\Totals" name="order.totals"/>
+        </referenceBlock>
+    </body>
+</page>

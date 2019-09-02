@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Techno
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Techno.com license that is
+ * available through the world-wide-web at this URL:
+ * https://www.Techno.com/LICENSE.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Techno
+ * @package     Techno_Core
+ * @copyright   Copyright (c) 2016 Techno (http://www.Techno.com/)
+ * @license     https://www.Techno.com/LICENSE.txt
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Techno_Core::menu" title="P/P Help" module="Techno_Core" sortOrder="50" resource="Techno_Core::menu"/>
+        <add id="Techno_Core::documentation" title="Documentations" module="Techno_Core" sortOrder="999" resource="Techno_Core::documentation" parent="Techno_Core::menu"/>
+        <add id="Techno_Core::userguide" title="User Guides" module="Techno_Core" sortOrder="10" action="Techno_core/index/userguide" resource="Techno_Core::userguide" parent="Techno_Core::documentation"/>
+        <add id="Techno_Core::partners" title="P/P Marketplace" module="Techno_Core" sortOrder="1000" action="Techno_core/index" resource="Techno_Core::partners"/>
+    </menu>
+</config>

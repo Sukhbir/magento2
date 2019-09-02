@@ -1,0 +1,35 @@
+<table border="1px">
+    <tr>
+        <td colspan="4" style="text-align: center; font-size: 15px; font-weight: bold">Your Were Added These Items In Cart.</td>
+    </tr>
+    <tr>
+        <th>Name</th>
+        <th>Image</th>
+        <th>Price</th>
+        <th>Sku</th>
+    </tr>
+<?php
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$cart = $objectManager->get('\Magento\Checkout\Model\Cart'); 
+$itemsVisible = $cart->getQuote()->getAllVisibleItems();
+$store = $objectManager->get('Magento\Store\Model\StoreManagerInterface')->getStore();
+ 
+foreach($itemsVisible as $item) 
+{
+    $prdoduct = $objectManager->get('Magento\Catalog\Model\Product')->load($item->getProductId());
+    $productImageUrl = $store->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product' . $prdoduct->getImage('small');
+    $productUrl  = $prdoduct->getProductUrl();
+    
+    echo "<tr>
+        <td><a href='$productUrl' target='_blank'>".$prdoduct->getName()."</a></td>
+        <td><img src='$productImageUrl' width='100px' height='100px'></td>
+        <td>".number_format($item->getPrice(), 2)."</td>
+        <td>".$prdoduct->getSku()."</td>
+    </tr>";
+ 
+}
+?>
+</table>
+<style>
+    table,tr,td {border: 1px solid;}
+</style>

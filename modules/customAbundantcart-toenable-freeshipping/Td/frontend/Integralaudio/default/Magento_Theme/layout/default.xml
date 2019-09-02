@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd" >
+  <body>
+        <referenceContainer name="after.body.start">
+            <block class="Magento\Framework\View\Element\Template" name="integralaudio_head" template="Magento_Theme::html/head.phtml" before="-"/>
+        </referenceContainer>
+        <referenceContainer name="page.wrapper">
+            <!--<block cacheable="false" before="-" class="Magento\Framework\View\Element\Template" name="popup" template="Magento_Theme::html/popup.phtml"/>-->
+            <block class="Magento\Framework\View\Element\Template" name="integralaudio_header" template="Magento_Theme::html/header.phtml" before="main.content">
+                <block class="Magento\Framework\View\Element\Template" name="top.search" as="topSearch" template="Magento_Search::form.mini.phtml" />
+            </block>
+            <block class="Magento\Theme\Block\Html\Title" name="page.main.title" template="Magento_Theme::html/title.phtml" after="integralaudio_header">
+                <block class="Magento\Theme\Block\Html\Breadcrumbs" name="breadcrumbs" as="breadcrumbs" template="Magento_Theme::html/breadcrumbs.phtml"/>
+            </block>
+        </referenceContainer>
+        <move element="top.search" destination="integralaudio_header"/>
+        <move element="minicart" destination="integralaudio_header"/>
+        <move element="logo" destination="integralaudio_header"/>
+      <!--   <referenceContainer name="columns.top">
+            <block class="Magento\Theme\Block\Html\Title" name="page.main.title" template="Magento_Theme::html/title.phtml">
+                <block class="Magento\Theme\Block\Html\Breadcrumbs" name="breadcrumbs" as="breadcrumbs" template="Magento_Theme::html/breadcrumbs.phtml"/>
+            </block>
+        </referenceContainer> -->
+        <referenceContainer name="footer-container">
+            <block class="Magento\Cms\Block\Block" name="block-footer">
+                <arguments>
+                     <argument name="block_id" xsi:type="string">Integralaudio_footer</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+        <referenceContainer name="footer" remove="1"/>
+        <referenceContainer name="header.container" remove="1"/>
+        <referenceContainer name="header.panel" remove="1"/>
+        <referenceContainer name="header-wrapper" remove="1"/>
+        <referenceContainer name="navigation.sections" remove="1"/>
+        <referenceContainer name="catalog.compare.sidebar" remove="1"/>
+        <referenceContainer name="wishlist_sidebar" remove="1"/>
+        <referenceContainer name="advanced-search-link" remove="1"/>
+        <move element="page.messages" destination="columns" before="-"/>
+     </body>
+</page>

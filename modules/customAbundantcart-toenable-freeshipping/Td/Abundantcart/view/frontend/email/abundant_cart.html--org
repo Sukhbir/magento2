@@ -1,0 +1,17 @@
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<!--@subject {{trans "Abundant Cart"}} @-->
+
+ 
+{{template config_path="design/email/header_template"}}
+<table class="message-details">
+    <tr>
+        <td><b>{{trans "Coupon Code"}}</b></td>
+        <td>You can use this Code {{var coupon_code}} for claim free shipping.</td>
+    </tr>
+ </table>
+ {{template config_path="design/email/footer_template"}}

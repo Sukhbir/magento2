@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-2columns-left" xsi:noNamespaceSchemaLocation="../../../../../../../lib/internal/Magento/Framework/View/Layout/etc/page_configuration.xsd">
+     <update handle="editor"/>
+    <body>
+	   <referenceContainer name="content">
+            <block class="Product\Enquiry\Block\Adminhtml\Enquiry\Edit" name="enquiry_enquiry_edit"/>
+        </referenceContainer>
+		 <referenceContainer name="left">
+            <block class="Product\Enquiry\Block\Adminhtml\Enquiry\Edit\Tabs" name="enquiry_enquiry_edit_tabs">
+				<block class="Product\Enquiry\Block\Adminhtml\Enquiry\Edit\Tab\ProductEnquiry" name="enquiry_enquiry_edit_tab_productenquiry"/>
+				 <action method="addTab">
+                    <argument name="name" xsi:type="string">productenquiry_section</argument>
+                    <argument name="block" xsi:type="string">enquiry_enquiry_edit_tab_productenquiry</argument>
+                </action>
+				<!--CedAddTab-->
+			</block>
+        </referenceContainer>
+    </body>
+</page>

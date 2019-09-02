@@ -1,0 +1,132 @@
+<?php
+    $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+    $product = $objectManager->get('Magento\Framework\Registry')->registry('current_product');
+    $attributes = current_product($product,$objectManager);
+    $attr_filter = array_filter($attributes);
+    $parentIds = '';
+    $parentId = '';
+    $passid = '';
+    $parentIds = $objectManager->get('Magento\ConfigurableProduct\Model\Product\Type\Configurable')->getParentIdsByChild($product->getId());
+    $parentId = array_shift($parentIds);
+    if($parentId)
+    { ?>
+        <div class="simple-product-options">
+        <?php
+        $passid = $parentId;
+        $configProduct = $objectManager->create('Magento\Catalog\Model\Product')->load($parentId);
+        $_children = $configProduct->getTypeInstance()->getUsedProducts($configProduct);
+
+        $data = $configProduct->getTypeInstance()->getConfigurableOptions($configProduct);
+
+        $options = array();
+        $sku = array();
+        foreach($data as $attr){
+
+          foreach($attr as $p){
+
+            $options[] = array('label'=>$p['super_attribute_label'],'value'=>$p['option_title'],'index'=>$p['value_index'],'code'=>$p['attribute_code']);
+            $sku[] = $p['sku'];
+          }
+        }
+
+        $unique_arr = array_unique($options,SORT_REGULAR);
+
+        foreach($unique_arr as $key => $dataarr)
+        { 
+            $unique_arr[$key]['sku'] = $sku[$key];
+        }
+
+
+        $previousId = '';
+        $i=0;
+        foreach($unique_arr as $data)
+        {
+            if($i==0)
+            { ?>
+                   <div class='option-label'><?php echo $data['label'] ?>
+
+           <?php }
+            if($previousId !== '' && $previousId !== $data['label']) 
+            { ?></div>
+                <div class='option-label'><?php echo $data['label'] ?>
+           <?php }
+
+            $previousId = $data['label']; ?>
+                    <div class='option-value'>
+                    <a data-sku="<?php echo $data['sku']; ?>" data-code="<?php echo $data['code']; ?>" data-index="<?php echo $data['index']; ?>" href="javascript:void(0)" class="selectOption <?php if(in_array( $data['index'],$attr_filter)) { echo 'active'; } ?>"><?php echo $data['value'] ?></a>
+             </div>
+           <?php
+            $i++;
+         }
+
+        ?>
+        </div>
+        <div class="loader" style="display: none;"><img src="<?php echo $block->getViewFileUrl('images/loader.gif'); ?>"></div>
+</div>
+<?php } ?>
+
+<?php
+function current_product($product,$objectManager)
+{
+    $simpleProduct = $objectManager->create('Magento\Catalog\Model\Product')->load($product->getId());
+    $st_type =  $simpleProduct->getStorageType();
+    $color =  $simpleProduct->getColor();
+    $os =  $simpleProduct->getOs();
+    $st_size =  $simpleProduct->getStorageSize();
+    $ram =  $simpleProduct->getRam();
+    $ram_type = $simpleProduct->getRamType();
+    $ram_speed = $simpleProduct->getRamSpeed();
+    $display_size = $simpleProduct->getDisplaySize();
+    
+    $attributes = array($st_type,$color,$os,$st_size,$ram,$ram_type,$ram_speed,$display_size);
+    return $attributes;
+}
+
+?>
+<style>
+    .simple-product-options .option-value a.active {
+    background: black;
+    width: 43px;
+    color: #fff;
+}
+</style>
+<script type="text/javascript">
+    require([ 'jquery', 'jquery/ui'], function($){
+    jQuery(document).ready(function(){
+        jQuery(document).on('click','.selectOption',function(){
+            jQuery('.loader').css('display','block');
+            jQuery(this).parent().parent().find('.active').removeClass("active");
+            jQuery(this).addClass('active');
+            arr = '';
+            arr1 = [];
+            $('.simple-product-options .active').each(function(i){
+                code = jQuery(this).attr('data-code');
+                index = jQuery(this).attr('data-index');
+                arr = {code:code, index:index};
+                arr1.push(arr);
+            });
+           var jsondata = JSON.stringify(arr1);
+                       
+            $.ajax({
+                method: "POST",
+                url: "<?php echo $this->getBaseUrl(); ?>product/index",
+                data: { code: code, index: index,id: <?php echo $passid; ?>,json:jsondata }
+              }).done(function( response ) {
+                  
+                  var result = $.parseJSON(response);
+                  if(result.stock =='Out of Stock')
+                  {
+                      $('.stock.available span').text(result.stock);
+                  }
+                  else
+                  {
+                      $('.stock.available span').text(result.stock);
+                      window.location.href = result.url;
+                  }
+                  jQuery('.loader').css('display','none');
+                });
+            
+        });
+    });
+});
+</script>
